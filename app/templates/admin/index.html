@@ -1,0 +1,20 @@
+{% extends 'bootstrap/base.html' %}
+{% block content%}
+
+{% for message in get_flashed_messages() %}
+<div class="alert alert-warning">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    {{ message }}
+</div>
+{% endfor %}
+<a href="{{ url_for('admin.add_user') }}">Add contact</a>
+</br>
+
+<ul class="row">
+{% for user in users %}
+    <li class="user">
+    {% user.username %}
+    </li>
+{% endfor %}
+</ul>
+{% endblock%}
