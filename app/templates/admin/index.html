@@ -13,7 +13,7 @@
 <ul class="row">
 {% for user in users %}
     <li class="user">
-    {% user.username %}
+    {{ user.email }} | <a href="#">{{ user.username }}</a> 
     </li>
 {% endfor %}
 </ul>
