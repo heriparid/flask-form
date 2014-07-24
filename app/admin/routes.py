@@ -1,15 +1,14 @@
 from app import db
 from app.models import User
-from flask import render_template, redirect, url_for, flash
+from flask import render_template, redirect, url_for, flash, jsonify
 
 from . import admin
 from .forms import ContactForm
-
+from ..decorators import datatables
 
 @admin.route('/')
 def index():
-    user_list = User.query.all()
-    return render_template('admin/index.html', users = user_list)
+    return render_template('admin/index.html')
 
 @admin.route('/adduser', methods=['GET', 'POST'])
 def add_user():
@@ -23,3 +22,8 @@ def add_user():
         return redirect(url_for('admin.index'))
     
     return render_template('admin/edit_contact.html', form=form)
+
+@admin.route('/users')
+@datatables
+def users():
+    return User.query

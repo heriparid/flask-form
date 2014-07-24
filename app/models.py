@@ -4,3 +4,10 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64), nullable=False, unique=True, index=True)
     username = db.Column(db.String(64), nullable=False, unique=True, index=True)
+    
+    def to_json(self):
+        return {
+            'id': self.id,
+            'email': self.email,
+            'username': self.username
+        }

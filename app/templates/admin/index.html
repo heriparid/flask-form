@@ -1,20 +1,72 @@
 {% extends 'bootstrap/base.html' %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static', filename='vendors/datatables-1.10.1/css/jquery.dataTables.css')}}">
+{% endblock %}
+
 {% block content%}
 
-{% for message in get_flashed_messages() %}
-<div class="alert alert-warning">
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
-    {{ message }}
-</div>
-{% endfor %}
-<a href="{{ url_for('admin.add_user') }}">Add contact</a>
-</br>
-
-<ul class="row">
-{% for user in users %}
-    <li class="user">
-    {{ user.email }} | <a href="#">{{ user.username }}</a> 
-    </li>
-{% endfor %}
-</ul>
+	{% for message in get_flashed_messages() %}
+	<div class="alert alert-warning">
+	    <button type="button" class="close" data-dismiss="alert">&times;</button>
+	    {{ message }}
+	</div>
+	{% endfor %}
+	<a href="{{ url_for('admin.add_user') }}">Add contact</a>
+	</br>
+	
+	<div class="row-fluid">
+		<div class="col-xs-12 col-md-3 col-sm-4 col-sm-offset-4 col-md-offset-4 col-lg-3 col-lg-offset-4">
+			<table id="example" class="display" cellspacing="0" width="100%">
+		        <thead>
+		            <tr>
+		                <th>Name</th>
+		                <th>Email</th>		                
+		            </tr>
+		        </thead>
+		 
+		        <tfoot>
+		            <tr>
+		                <th>Name</th>
+		                <th>Email</th>
+		            </tr>
+		        </tfoot>
+		    </table>
+		</div>
+    </div>
 {% endblock%}
+
+
+{% block scripts %}
+{{super()}}
+<script src="{{url_for('static', filename='vendors/datatables-1.10.1/js/jquery.dataTables.js')}}"></script>
+<script>
+var test;
+$(document).ready(function() {
+    $('#example').dataTable( {
+    	"searching" : false,
+    	"bProcessing": true,
+    	"serverSide": true,
+        "sAjaxSource": "{{ url_for('admin.users') }}",
+        "columns": [
+            { "data": "username" },
+            { "data": "email" }
+        ]
+        /* "fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
+            oSettings.jqXHR = $.ajax( {
+              "dataType": 'json',
+              "url": sSource,
+              "data": aoData,
+              "success": function(aoData){
+            	  //test=aoData;
+                  //aoData.iTotalRecords=aoData.total;
+                  fnCallback (aoData);
+                  }
+            } );
+          } */
+    } );
+} );
+
+</script>
+{% endblock %}
