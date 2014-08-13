@@ -3,6 +3,22 @@
 {% block styles %}
 {{super()}}
 <link rel="stylesheet" href="{{url_for('static', filename='vendors/datatables-1.10.1/css/jquery.dataTables.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='vendors/datatables-1.10.1/exts/TableTools/css/dataTables.tableTools.css')}}">
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+<style>
+tr td:first-child {
+        text-align: center;
+    }
+ 
+    tr td:first-child:before {
+        content: "\f096"; /* fa-square-o */
+        font-family: FontAwesome;
+    }
+ 
+    tr.selected td:first-child:before {
+        content: "\f046"; /* fa-check-square-o */
+    }
+</style>
 {% endblock %}
 
 {% block content%}
@@ -18,21 +34,7 @@
 	
 	<div class="row-fluid">
 		<div class="col-xs-12 col-md-3 col-sm-4 col-sm-offset-4 col-md-offset-4 col-lg-3 col-lg-offset-4">
-			<table id="example" class="display" cellspacing="0" width="100%">
-		        <thead>
-		            <tr>
-		                <th>Name</th>
-		                <th>Email</th>		                
-		            </tr>
-		        </thead>
-		 
-		        <tfoot>
-		            <tr>
-		                <th>Name</th>
-		                <th>Email</th>
-		            </tr>
-		        </tfoot>
-		    </table>
+			<table id="example" class="display" cellspacing="0" width="100%" />
 		</div>
     </div>
 {% endblock%}
@@ -41,32 +43,28 @@
 {% block scripts %}
 {{super()}}
 <script src="{{url_for('static', filename='vendors/datatables-1.10.1/js/jquery.dataTables.js')}}"></script>
+<script src="{{url_for('static', filename='vendors/datatables-1.10.1/exts/TableTools/js/dataTables.tableTools.js')}}"></script>
+<script src="{{url_for('static', filename='js/script.js')}}"></script>
 <script>
-var test;
-$(document).ready(function() {
-    $('#example').dataTable( {
-    	"searching" : false,
-    	"bProcessing": true,
-    	"serverSide": true,
-        "sAjaxSource": "{{ url_for('admin.users') }}",
-        "columns": [
-            { "data": "username" },
-            { "data": "email" }
-        ]
-        /* "fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
-            oSettings.jqXHR = $.ajax( {
-              "dataType": 'json',
-              "url": sSource,
-              "data": aoData,
-              "success": function(aoData){
-            	  //test=aoData;
-                  //aoData.iTotalRecords=aoData.total;
-                  fnCallback (aoData);
-                  }
-            } );
-          } */
-    } );
-} );
+var myTable;
+
+(function ($) {
+	
+    $(function () {
+        myTable = $("#example").dataTable($.extend(true, {}, oDefaultDTConfig, {
+            "sAjaxSource": "{{ url_for('admin.users') }}",
+            "aoColumns": [
+                {"sTitle": "", "mData": null, "sDefaultContent": "", "bSortable": false},
+                {"sTitle": "Name",	"sName": "name","mDataProp": "username", "aTargets": [1], "bSearchable": true, "bSortable": true},
+                {"sTitle": "Email", "sName": "email", "mDataProp": "email", "aTargets": [2], "bSearchable": true, "bSortable": true, "mRender": function(data, type, row) {
+                    return "<a href='/admin/users/" + row["id"] + "'>" + row["email"] + "</a>";
+                }}
+            ]
+            
+        }));
+    });
+    
+}(jQuery));
 
 </script>
 {% endblock %}
