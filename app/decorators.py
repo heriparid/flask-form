@@ -21,6 +21,7 @@ def json(f):
         return rv
     return wrapped
 
+# TODO query of datatables functionality
 def datatables(f):
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
@@ -36,6 +37,8 @@ def datatables(f):
             field = request.args.get('mDataProp_%s' % colIdx)
             
         sort = '{} {}'.format(field, direction)
+        
+        # User.query.filter(User.__table__.c['username'].like('%2%')).all()
         
         query = f(*args, **kwargs)
         page = (start // per_page) + 1

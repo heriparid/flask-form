@@ -49,7 +49,7 @@ tr td:first-child {
 $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 var myTable;
 $(document).ready(function(){
-	myTable = $('#example').dataTable({
+	myTable = $('#example').DataTable({
 		"searching" : false,
 		"bProcessing" : true,
 		"serverSide" : true,
@@ -86,7 +86,7 @@ $(document).ready(function(){
 			    					  type: 'DELETE',
 			    					  success: function(result) {
 			    					  	if(result == 'success'){
-			    					  		myTable.fnDraw();
+			    					  		myTable.draw();
 			    					  	}
 			    					  }
 			    				  });
@@ -101,35 +101,9 @@ $(document).ready(function(){
 		}
     });
 });
-/* 
-(function ($) {
-	
-    $(function () {
-        myTable = $("#example").dataTable($.extend(true, {}, oDefaultDTConfig, {
-            "sAjaxSource": "{{ url_for('admin.users') }}",
-            "aoColumns": [
-                {"sTitle": "", "mData": null, "sDefaultContent": "", "bSortable": false},
-                {"sTitle": "Name",	"sName": "name","mDataProp": "username", "aTargets": [1], "bSearchable": true, "bSortable": true},
-                {"sTitle": "Email", "sName": "email", "mDataProp": "email", "aTargets": [2], "bSearchable": true, "bSortable": true, "mRender": function(data, type, row) {
-                    return "<a href='/admin/users/" + row["id"] + "'>" + row["email"] + "</a>";
-                }}
-            ],
-            "searching" : false,
-    		"bProcessing" : true,
-    		"serverSide" : true,
-    		"order" : [ 1, 'asc' ],
-    		"sDom" : 'T<"clear">lfrtip',
-    		"oTableTools" : {
-    			"sRowSelect" : "multi",
-    			"sRowSelector" : 'td:first-child',
-    			"aButtons" : [ "select_all", "select_none" ],
-    			"sSwfPath" : "{{url_for('static', filename='vendors/datatables-1.10.1/exts/TableTools/swf/copy_csv_xls_pdf.swf')}}"
-    		}
-            
-        }));
-    });
-    
-}(jQuery));
- */
+
+// TODO searching
+// function to search by column is myTable.column(<col-idx>).search(<search_val>).draw()
+
 </script>
 {% endblock %}

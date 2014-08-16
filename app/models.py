@@ -5,6 +5,9 @@ class User(db.Model):
     email = db.Column(db.String(64), nullable=False, unique=True, index=True)
     username = db.Column(db.String(64), nullable=False, unique=True, index=True)
     
+    def __str__(self):
+        return "name {}, email {}".format(self.username, self.email)
+    
     def to_json(self):
         return {
             'id': self.id,
