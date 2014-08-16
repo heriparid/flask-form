@@ -23,6 +23,19 @@ def add_user():
     
     return render_template('admin/edit_contact.html', form=form)
 
+@admin.route('/users/<int:user_id>', methods=['GET', 'POST'])
+def edit_user(user_id):
+    user = User.query.get_or_404(user_id)
+    form = ContactForm(obj=user)
+    if(form.validate_on_submit()):
+        form.populate_obj(user)
+        db.session.add(user)
+        db.session.commit()
+        flash('The user was updated successfully.')
+        return redirect(url_for('admin.index'))
+    
+    return render_template('admin/edit_contact.html', form=form)
+
 @admin.route('/users')
 @datatables
 def users():
