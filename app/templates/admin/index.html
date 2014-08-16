@@ -44,10 +44,64 @@ tr td:first-child {
 {{super()}}
 <script src="{{url_for('static', filename='vendors/datatables-1.10.1/js/jquery.dataTables.js')}}"></script>
 <script src="{{url_for('static', filename='vendors/datatables-1.10.1/exts/TableTools/js/dataTables.tableTools.js')}}"></script>
-<script src="{{url_for('static', filename='js/script.js')}}"></script>
-<script>
-var myTable;
 
+<script>
+$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+var myTable;
+$(document).ready(function(){
+	myTable = $('#example').dataTable({
+		"searching" : false,
+		"bProcessing" : true,
+		"serverSide" : true,
+		"sAjaxSource": "{{ url_for('admin.users') }}",
+        "aoColumns": [
+            {"sTitle": "", "mData": null, "sDefaultContent": "", "bSortable": false},
+            {"sTitle": "Name",	"sName": "name","mDataProp": "username", "aTargets": [1], "bSearchable": true, "bSortable": true},
+            {"sTitle": "Email", "sName": "email", "mDataProp": "email", "aTargets": [2], "bSearchable": true, "bSortable": true, "mRender": function(data, type, row) {
+                return "<a href='/admin/users/" + row["id"] + "'>" + row["email"] + "</a>";
+            }}
+        ],
+		"order" : [ 1, 'asc' ],
+		"sDom" : 'T<"clear">lfrtip',
+		"oTableTools" : {
+			"sRowSelect" : "multi",
+			"sRowSelector" : 'td:first-child',
+			"aButtons" : [
+			      {
+			    	  "sExtends": "text",
+			    	  "sButtonText": "Delete",
+			    	  "fnClick": function(){
+			    		  var data = this.fnGetSelectedData();
+			    		  if(data.length > 0){
+			    			  var ids = [];
+			    			  for(i = 0; i < data.length; i++){
+			    				  ids.push(data[i].id);
+			    			  }
+			    			  
+			    			  if(confirm("Are you sure want to delete the selected row?")){
+			    				  var idsStr = "" + ids + "";
+			    				  
+			    				  $.ajax({
+			    					  url: "{{ url_for('admin.delete_users', user_ids=9999) }}".replace(9999, idsStr),
+			    					  type: 'DELETE',
+			    					  success: function(result) {
+			    					  	if(result == 'success'){
+			    					  		myTable.fnDraw();
+			    					  	}
+			    					  }
+			    				  });
+			    			  }
+			    		  }
+			    	  }
+			      },
+			      "select_all", 
+			      "select_none" 
+			 ],
+			"sSwfPath" : "{{url_for('static', filename='vendors/datatables-1.10.1/exts/TableTools/swf/copy_csv_xls_pdf.swf')}}"
+		}
+    });
+});
+/* 
 (function ($) {
 	
     $(function () {
@@ -59,12 +113,23 @@ var myTable;
                 {"sTitle": "Email", "sName": "email", "mDataProp": "email", "aTargets": [2], "bSearchable": true, "bSortable": true, "mRender": function(data, type, row) {
                     return "<a href='/admin/users/" + row["id"] + "'>" + row["email"] + "</a>";
                 }}
-            ]
+            ],
+            "searching" : false,
+    		"bProcessing" : true,
+    		"serverSide" : true,
+    		"order" : [ 1, 'asc' ],
+    		"sDom" : 'T<"clear">lfrtip',
+    		"oTableTools" : {
+    			"sRowSelect" : "multi",
+    			"sRowSelector" : 'td:first-child',
+    			"aButtons" : [ "select_all", "select_none" ],
+    			"sSwfPath" : "{{url_for('static', filename='vendors/datatables-1.10.1/exts/TableTools/swf/copy_csv_xls_pdf.swf')}}"
+    		}
             
         }));
     });
     
 }(jQuery));
-
+ */
 </script>
 {% endblock %}

@@ -36,6 +36,19 @@ def edit_user(user_id):
     
     return render_template('admin/edit_contact.html', form=form)
 
+@admin.route('/users/<user_ids>', methods=['DELETE'])
+def delete_users(user_ids):
+    ids = user_ids.split(',')
+    for id in ids:
+        user = User.query.get(id)
+        if not user == None:
+            db.session.delete(user)
+        else:
+            return "failed"
+        
+    db.session.commit()
+    return "success"
+
 @admin.route('/users')
 @datatables
 def users():
